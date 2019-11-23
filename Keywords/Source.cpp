@@ -1,6 +1,6 @@
 /*
 	Nicholas Cullen
-	11/20/19
+	11/22/19
 	Keywords: A game where the player guesses three scrambled code words to win
 */
 
@@ -13,16 +13,6 @@
 
 //Prevents me from having to use "std::" for anything in the std namespace
 using namespace std;
-
-
-//The definition for a code word
-struct CodeWord
-{
-	//The word itself
-	string word;
-	//The hint for cracking the code word
-	string hint;
-};
 
 //Used to keep track of the amount of code words that have been cracked through the game
 int codeWordCounter = 1;
@@ -39,6 +29,25 @@ bool PlayAgain = false;
 
 //Whether the player has won a round or not
 bool WonRounds = false;
+
+
+//Takes in a string, scrambles it, and returns the scrambled form
+string Scramble(string str);
+
+//Takes in a string and makes it lower case
+string ToLowerCase(string input);
+
+//Initiates a code word puzzle
+bool DoCodeWord();
+
+//The definition for a code word
+struct CodeWord
+{
+	//The word itself
+	string word;
+	//The hint for cracking the code word
+	string hint;
+};
 
 //A list of all the code words that could appear in the game, along with their hints
 CodeWord codeWords[] = 
@@ -58,6 +67,66 @@ CodeWord codeWords[] =
 	{"Mexico", "The name of a middle american country"},
 	{"Factorial", "A mathmatical term : { !n }"}
 };
+
+int main()
+{
+	//Set the seed of the randomizer
+	srand(time(0));
+
+	//Print the greeting message
+	cout << "Welcome to Nick's Codebreaker Game!\n\n\n";
+	cout << "You will be give three scrambled code words, and it is your job to unscramble them.\nWhen you figure out what they are, type in your answer to see if you are right.\nIf you are, then you move on to the next word.\n\n";
+	cout << "Press the Enter key to start";
+
+	//Wait for the "Enter" key to be pressed
+	cin.get();
+
+	do
+	{
+		WonRounds = true;
+		//Run the puzzles "totalPlayTimes" amount of times
+		for (codeWordCounter = 1; codeWordCounter <= totalPlayTimes; codeWordCounter++)
+		{
+			//Do a code word puzzle
+			if (DoCodeWord() == false)
+			{
+				//If the player didn't complete it, then break out of the loop
+				WonRounds = false;
+				break;
+			}
+		}
+
+		//Clear the screen
+		system("cls");
+
+		//If the player has won all the rounds
+		if (WonRounds)
+		{
+			//Print the congrats message
+			cout << "Congrats!!! You guessed all 3 code words!\n";
+			cout << "Thank you for playing!\n\n";
+		}
+
+		cout << "Your current score is " << score << "\n\n";
+
+		cout << "Want to play again? [Y/N]\n";
+
+		//Get the player's input
+		string input;
+		getline(cin, input);
+
+		//If the player said "Y", then PlayAgain will be true, and false otherwise
+		PlayAgain = (ToLowerCase(input).find("y") < string::npos);
+
+	//Repeat until PlayAgain is false
+	} while (PlayAgain);
+
+	//Wait for a key press
+	system("pause");
+
+	//Exit the application
+	return 0;
+}
 
 
 //Takes in a string, scrambles it, and returns the scrambled form
@@ -90,7 +159,7 @@ bool DoCodeWord()
 
 	/*
 	Get a random index between 0 - (size of array);
-	
+
 	sizeof(codeWords) gets the amount of elements in the array TIMES the size of the CodeWord struct.
 	But if we divide that by the size of the CodeWord struct, we are left with the amount of elements in the array
 	*/
@@ -171,64 +240,4 @@ bool DoCodeWord()
 		}
 	}
 
-}
-
-int main()
-{
-	//Set the seed of the randomizer
-	srand(time(0));
-
-	//Print the greeting message
-	cout << "Welcome to Nick's Codebreaker Game!\n\n\n";
-	cout << "You will be give three scrambled code words, and it is your job to unscramble them.\nWhen you figure out what they are, type in your answer to see if you are right.\nIf you are, then you move on to the next word.\n\n";
-	cout << "Press the Enter key to start";
-
-	//Wait for the "Enter" key to be pressed
-	cin.get();
-
-	do
-	{
-		WonRounds = true;
-		//Run the puzzles "totalPlayTimes" amount of times
-		for (codeWordCounter = 1; codeWordCounter <= totalPlayTimes; codeWordCounter++)
-		{
-			//Do a code word puzzle
-			if (DoCodeWord() == false)
-			{
-				//If the player didn't complete it, then break out of the loop
-				WonRounds = false;
-				break;
-			}
-		}
-
-		//Clear the screen
-		system("cls");
-
-		//If the player has won all the rounds
-		if (WonRounds)
-		{
-			//Print the congrats message
-			cout << "Congrats!!! You guessed all 3 code words!\n";
-			cout << "Thank you for playing!\n\n";
-		}
-
-		cout << "Your current score is " << score << "\n\n";
-
-		cout << "Want to play again? [Y/N]\n";
-
-		//Get the player's input
-		string input;
-		getline(cin, input);
-
-		//If the player said "Y", then PlayAgain will be true, and false otherwise
-		PlayAgain = (ToLowerCase(input).find("y") < string::npos);
-
-	//Repeat until PlayAgain is false
-	} while (PlayAgain);
-
-	//Wait for a key press
-	system("pause");
-
-	//Exit the application
-	return 0;
 }
